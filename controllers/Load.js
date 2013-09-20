@@ -134,7 +134,9 @@ define(["require", "dojo/_base/lang", "dojo/_base/declare", "dojo/on", "dojo/Def
 			var def = this.loadChild(parent, childId, subIds, params);
 			// call Load event callback
 			if(event.callback){
-				when(def, event.callback);
+				when(def, function(view){
+					event.callback(view);
+				});
 			}
 			return def;
 		},
@@ -259,14 +261,14 @@ define(["require", "dojo/_base/lang", "dojo/_base/declare", "dojo/on", "dojo/Def
 				subIds = parts.join(',');
 				if(childId){
 					var subLoadDeferred = this.loadChild(child, childId, subIds, params);
-					when(subLoadDeferred, function(){
-						loadChildDeferred.resolve();
+					when(subLoadDeferred, function(view){
+						loadChildDeferred.resolve(view);
 					},
 					function(){
 						loadChildDeferred.reject("load child '"+childId+"' error.");
 					});
 				}else{
-					loadChildDeferred.resolve();
+					loadChildDeferred.resolve(child);
 				}
 			}),
 			function(){

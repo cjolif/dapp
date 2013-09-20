@@ -1,0 +1,47 @@
+{
+	"id": "jqmApp",
+	
+	"loaderConfig": {
+		"paths": {
+			"jqmApp": "../dapp/tests/jqmApp"
+		}
+	},
+
+	"dependencies": [
+	],
+
+	"modules": [
+	],
+
+	"controllers": [
+		"dapp/controllers/Load",
+		"dapp/controllers/jqm/Load",
+		"dapp/controllers/jqm/Transition",
+		"dapp/controllers/Layout"
+	],
+
+	"has" : {
+		"ie9orLess" : {
+			"controllers": [
+				"dapp/controllers/HistoryHash"
+			]
+		},
+		"!ie9orLess" : {
+			"controllers": [
+				"dapp/controllers/History"
+			]
+		}
+	},	
+		
+	"defaultView": "home",
+
+	"views": {
+		"home": {
+			"template": "jqmApp/home.html"
+		},
+		"detail": {
+			"controller" : "jqmApp/detail.js",
+			"template": "jqmApp/detail.html"
+		}
+	}
+}

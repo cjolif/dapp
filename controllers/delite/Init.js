@@ -8,7 +8,7 @@ define(["require", "dcl/dcl", "dojo/_base/lang", "dojo/on", "dojo/Deferred", "..
 			// we might want to parse first
 			if (this.app.parseOnLoad) {
 				var self = this;
-				require(["dui/register"], function (register) {
+				require(["delite/register"], function (register) {
 					register.parse();
 					self._initContainer();
 				});
@@ -17,13 +17,13 @@ define(["require", "dcl/dcl", "dojo/_base/lang", "dojo/on", "dojo/Deferred", "..
 			}
 		},
 		_initContainer: function () {
-			// create the dui main container or use it if already available in the HTML of the app
+			// create the delite main container or use it if already available in the HTML of the app
 			if (this.app.containerSelector == null) {
 				if (this.app.domNode.children[0] == null) {
 					// the user has not notified us of a widget to use as the parent
 					// build one
 					var self = this;
-					require(["dui/ViewStack"], function (ViewStack) {
+					require(["deliteful/ViewStack"], function (ViewStack) {
 						var containerNode = self.app.containerNode = new ViewStack();
 						containerNode.style.width = "100%";
 						containerNode.style.height = "100%";

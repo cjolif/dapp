@@ -178,15 +178,6 @@ define(["require", "dojo/_base/kernel", "dojo/_base/lang", "dojo/_base/declare",
 			if (!config.loaderConfig) {
 				config.loaderConfig = {};
 			}
-			if (!config.loaderConfig.paths) {
-				config.loaderConfig.paths = {};
-			}
-			if (!config.loaderConfig.map) {
-				config.loaderConfig.map = {};
-			}
-			// we don't want delite display controller to be loaded as we have our own controllers
-			// point to an already loaded module to make this no-op
-			config.loaderConfig.map["*"] = { "dui/DisplayController": "dapp/main" };
 			require(config.loaderConfig);
 
 			if (!config.modules) {

@@ -1,5 +1,5 @@
 define(["require", "dojo/when", "dojo/on", "dojo/dom-attr", "dojo/dom-style", "dojo/_base/declare", "dojo/_base/lang",
-	"dojo/Deferred", "./utils/constraints", "dui/register"],
+	"dojo/Deferred", "./utils/constraints", "delite/register"],
 	function (require, when, on, domAttr, domStyle, declare, lang, Deferred, constraints, register) {
 		return declare(null, {
 			// summary:

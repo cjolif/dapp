@@ -3,12 +3,10 @@ define(["dcl/dcl", "dojo/on", "dojo/when", "dojo/Deferred", "dojo/promise/all", 
 
 	return dcl(Controller, {
 		constructor: function () {
-			document.addEventListener("delite-display", lang.hitch(this, "_displayHandler"), true);
+			document.addEventListener("delite-display", lang.hitch(this, "_displayHandler"));
 		},
 		_displayHandler: function (event) {
-			if (event.target === document) {
-				this._displayViews(event);
-			}
+			this._displayViews(event);
 		},
 		_displayViews: function (event, skipParents) {
 			var views = event.dest && event.dest.split("+");
@@ -23,7 +21,7 @@ define(["dcl/dcl", "dojo/on", "dojo/when", "dojo/Deferred", "dojo/promise/all", 
 			}
 		},
 		_displayView: function (viewTarget, event, displayDefaultView, skipParents) {
-			var deferred = new Deferred(), self = this, subEvent, parent;
+			var deferred = new Deferred(), self = this, subEvent, parent, loadDeferred;
 			// wait for parents to be displayed first
 			when(skipParents || this._displayParents(viewTarget, event), function (value) {
 				subEvent = Object.create(event);
@@ -34,19 +32,17 @@ define(["dcl/dcl", "dojo/on", "dojo/when", "dojo/Deferred", "dojo/promise/all", 
 				// "myview": { container: "a query string" }
 				// and when specified use the query string here to get the container instead of the only child
 				subEvent.parent = parent = value.dapp.nextView;
-				parent.containerNode.emit("delite-display", subEvent);
+				loadDeferred = parent.containerNode.show(subEvent.dest, subEvent);
 				// if we are at the init view, check if we have defaultView children to display in addition
 				if (displayDefaultView) {
-					on.once(parent.containerNode, "delite-display-load", function (loadEvent) {
-						loadEvent.loadDeferred.then(function (value) {
-							if (value.dapp.nextView.defaultView) {
-								// TODO: here we re-use the same transition as was initially setup
-								// do we want to use it for defaultView as well?
-								var newEvent = Object.create(loadEvent);
-								newEvent.dest = value.dapp.nextView.defaultView;
-								self._displayViews(newEvent, value);
-							}
-						});
+					loadDeferred.then(function (value) {
+						if (value.dapp.nextView.defaultView) {
+							// TODO: here we re-use the same transition as was initially setup
+							// do we want to use it for defaultView as well?
+							var newEvent = Object.create(subEvent);
+							newEvent.dest = value.dapp.nextView.defaultView;
+							self._displayViews(newEvent, value);
+						}
 					});
 				}
 			});

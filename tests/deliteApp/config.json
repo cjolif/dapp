@@ -15,7 +15,7 @@
 	"parseOnLoad": true,
 
 	"dependencies": [
-		"dui/LinearLayout"
+		"deliteful/LinearLayout"
 	],
 
 	"controllers": [
@@ -32,7 +32,7 @@
 		},
 		"content": {
 			"dependencies": [
-				"dui/ViewStack"
+				"deliteful/ViewStack"
 			],
 			"constraint": "fill",
 			"template": "deliteApp/content.html",

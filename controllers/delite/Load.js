@@ -1,5 +1,7 @@
-define(["require", "dcl/dcl", "dojo/_base/lang", "dojo/Deferred", "../../Controller"],
-	function (require, dcl, lang, Deferred, Controller) {
+define(["require", "dcl/dcl", "dojo/_base/lang", "dojo/Deferred", "../../Controller", "delite/DisplayController"],
+	function (require, dcl, lang, Deferred, Controller, DisplayController) {
+
+	DisplayController.unregister();
 
 	var resolveView = function (event, newView) {
 		// in addition to arguments required by delite we pass our own needed arguments
@@ -18,7 +20,7 @@ define(["require", "dcl/dcl", "dojo/_base/lang", "dojo/Deferred", "../../Control
 		_loadHandler: function (event) {
 			// load the actual view
 			// TODO: don't I have two cases here, when the parent is a delite display container and when not?
-			// probably to be solved by having all dui containers support the eventing mechanism
+			// probably to be solved by having all delite containers support the eventing mechanism
 			var viewId = event.dest || "";
 			// TODO: deal with defaultParams?
 			var params = event.params || "";

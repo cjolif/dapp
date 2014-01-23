@@ -6,7 +6,11 @@ define(["dcl/dcl", "dojo/on", "dojo/when", "dojo/Deferred", "dojo/promise/all", 
 			document.addEventListener("delite-display", lang.hitch(this, "_displayHandler"));
 		},
 		_displayHandler: function (event) {
-			this._displayViews(event);
+			// TODO be more generic here instead of picking a few props
+			this._displayViews({
+				dest: event.dest
+				// other props
+			});
 		},
 		_displayViews: function (event, skipParents) {
 			var views = event.dest && event.dest.split("+");
@@ -26,13 +30,15 @@ define(["dcl/dcl", "dojo/on", "dojo/when", "dojo/Deferred", "dojo/promise/all", 
 			when(skipParents || this._displayParents(viewTarget, event), function (value) {
 				subEvent = Object.create(event);
 				subEvent.dest = viewTarget.split(",").pop();
-				subEvent.transitionDeferred = deferred;
 				// parent is the view, the container is only child of the view
 				// TODO make sure one can in the config of the view specify a different container
 				// "myview": { container: "a query string" }
 				// and when specified use the query string here to get the container instead of the only child
 				subEvent.parent = parent = value.dapp.nextView;
-				loadDeferred = parent.containerNode.show(subEvent.dest, subEvent);
+				loadDeferred = parent.containerNode.show(subEvent.dest, subEvent).then(function (value) {
+					deferred.resolve(value);
+					return value;
+				});
 				// if we are at the init view, check if we have defaultView children to display in addition
 				if (displayDefaultView) {
 					loadDeferred.then(function (value) {
@@ -43,6 +49,7 @@ define(["dcl/dcl", "dojo/on", "dojo/when", "dojo/Deferred", "dojo/promise/all", 
 							newEvent.dest = value.dapp.nextView.defaultView;
 							self._displayViews(newEvent, value);
 						}
+						return value;
 					});
 				}
 			});

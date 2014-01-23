@@ -1,7 +1,5 @@
-define(["require", "dcl/dcl", "dojo/_base/lang", "dojo/Deferred", "../../Controller", "delite/DisplayController"],
-	function (require, dcl, lang, Deferred, Controller, DisplayController) {
-
-	DisplayController.unregister();
+define(["require", "dcl/dcl", "dojo/on", "dojo/_base/lang", "dojo/Deferred", "../../Controller"],
+	function (require, dcl, on, lang, Deferred, Controller, DisplayController) {
 
 	var resolveView = function (event, newView) {
 		// in addition to arguments required by delite we pass our own needed arguments
@@ -18,6 +16,7 @@ define(["require", "dcl/dcl", "dojo/_base/lang", "dojo/Deferred", "../../Control
 			document.addEventListener("delite-display-load", lang.hitch(this, "_loadHandler"));
 		},
 		_loadHandler: function (event) {
+			event.preventDefault();
 			// load the actual view
 			// TODO: don't I have two cases here, when the parent is a delite display container and when not?
 			// probably to be solved by having all delite containers support the eventing mechanism
@@ -33,16 +32,17 @@ define(["require", "dcl/dcl", "dojo/_base/lang", "dojo/Deferred", "../../Control
 				if (value.dapp.nextView) {
 					value.dapp.nextView.beforeActivate(value.dapp.previousView);
 				}
+				return value;
 			});
 			// once transition we will be ready to call afterActivate
-			event.transitionDeferred.then(function (value) {
+			on.once(event.target, "delite-display-complete", function (complete) {
 				// TODO works for StackView but what about containers with several views visible same time
-				event.parent._activeView = value.dapp.nextView;
-				if (value.dapp.nextView) {
-					value.dapp.nextView.afterActivate(value.dapp.previousView);
+				complete.parent._activeView = complete.dapp.nextView;
+				if (complete.dapp.nextView) {
+					complete.dapp.nextView.afterActivate(complete.dapp.previousView);
 				}
-				if (value.dapp.previousView) {
-					value.dapp.previousView.afterDeactivate(value.dapp.nextView);
+				if (complete.dapp.previousView) {
+					complete.dapp.previousView.afterDeactivate(complete.dapp.nextView);
 				}
 			});
 			if (view) {
